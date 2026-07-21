@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<!-- saved from url=(0030)https://7alm.neocities.org/api -->
+<html lang="ar" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👑 King API - Multi-Page Manager</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #1c1e21;
+        }
+        #kapi-panel {
+            max-width: 820px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(0,0,0,.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            direction: ltr;
+        }
+        #kapi-panel * {
+            box-sizing: border-box;
+        }
+        #kapi-panel input[type="checkbox"] {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            accent-color: #1877F2;
+        }
+        .kph {
+            background: linear-gradient(135deg, #1877F2, #42B72A);
+            color: #fff;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            direction: rtl;
+        }
+        .kph h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .kpbd-main {
+            padding: 15px;
+            overflow-y: auto;
+            flex: 1;
+            direction: rtl;
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #dddfe2;
+            border-radius: 5px;
+            font-size: 12px;
+            background: #fff;
+        }
+        textarea {
+            min-height: 60px;
+            resize: vertical;
+            direction: rtl;
+        }
+        .kpst {
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 6px 0;
+        }
+        .kpst.ok { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .kpst.err { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .kpst.i { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .kpst.w { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+        th {
+            background: #f7f8fa;
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 10px;
+            border-bottom: 2px solid #dddfe2;
+        }
+        td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #f0f2f5;
+            vertical-align: middle;
+            text-align: left;
+        }
+        tr:hover td { background: #f7f8fa; }
+        .kpb {
+            width: 50px;
+            height: 5px;
+            background: #e4e6eb;
+            border-radius: 3px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .kpbi {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #1877F2, #2ecc71);
+            transition: width .3s;
+        }
+        .kpbd {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+        .kpbd.idle { background: #e4e6eb; color: #65676b; }
+        .kpbd.run { background: #d1ecf1; color: #0c5460; }
+        .kpbd.done { background: #d4edda; color: #155724; }
+        .kpbd.fail { background: #f8d7da; color: #721c24; }
+        .kprow {
+            display: flex;
+            gap: 6px;
+            margin: 8px 0;
+            align-items: center;
+        }
+        .kprow button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            text-align: center;
+        }
+        .kpp { background: #1877F2 !important; color: #fff !important; }
+        .kps { background: #2ecc71 !important; color: #fff !important; }
+        .kpd { background: #e74c3c !important; color: #fff !important; }
+        .kpem { padding: 20px; text-align: center; color: #65676b; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div id="kapi-panel">
+        <div class="kph">
+            <h2>👑 King API - Multi-Page Manager</h2>
+        </div>
+        <div class="kpbd-main" id="kkb">
+            <div class="kprow" style="direction: ltr;">
+                <input id="kt" type="text" placeholder="User Token (EAA...)" style="font-family:monospace;font-size:11px">
+                <button class="kpp" id="kl" style="flex:0 0 auto;padding:8px 16px">🚀 Load Pages</button>
+            </div>
+            <div class="kpst err" id="kst">❌ خطأ: Failed to fetch</div>
+            <div class="kprow">
+                <textarea id="km" placeholder="اكتب رسالة الإرسال هنا..."></textarea>
+            </div>
+            <div class="kprow" style="font-size:11px;color:#65676b; justify-content: flex-start; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <label>Batch:</label>
+                    <input id="kb" type="number" value="3" min="1" max="50" style="width:50px">
+                </div>
+                <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+                    <input type="checkbox" id="krnd" checked=""> +Rnd
+                </label>
+            </div>
+            <div class="kprow">
+                <button class="kps" id="ksa">📨 Send Selected</button>
+                <button class="kpd" id="ksta">⏹ Stop All</button>
+            </div>
+            <div id="kw"><div class="kpem">لا توجد صفحات محملة. أدخل الـ User Token واضغط Load Pages.</div></div>
+        </div>
+    </div>
+
+    <script>
+        var T = localStorage.getItem('kp_t') || '';
+        var pages = [];
+        var stats = {};
+        var selected = {};
+
+        function $(id) { return document.getElementById(id); }
+
+        function status(msg, type) {
+            var el = $('kst');
+            if(el) {
+                el.className = 'kpst ' + (type || 'i');
+                el.textContent = msg;
+            }
+        }
+
+        function saveToken() { localStorage.setItem('kp_t', T); }
+
+        function renderTable() {
+            var wrap = $('kw');
+            if(!wrap) return;
+            if(!pages.length) {
+                wrap.innerHTML = '<div class="kpem">لا توجد صفحات محملة. أدخل الـ User Token واضغط Load Pages.</div>';
+                return;
+            }
+            var h = '<table style="direction: ltr;"><tr><th style="width:28px;text-align:center"><input type="checkbox" id="kc"></th><th>Root Account</th><th>Recipients</th><th>Sent</th><th>Pending</th><th>Failed</th><th>Progress</th><th>Status</th><th>Action</th></tr>';
+            pages.forEach(function(p) {
+                var s = stats[p.id] || {n:0, sent:0, pending:0, fail:0, pct:0, q:'idle'};
+                var pct = s.pct || 0;
+                var cls = s.q === 'running' ? 'run' : s.q === 'done' ? 'done' : s.q === 'fail' ? 'fail' : 'idle';
+                var chk = selected[p.id] ? 'checked' : '';
+                h += '<tr>' +
+                    '<td style="text-align:center"><input type="checkbox" class="kc" data-id="'+p.id+'" '+chk+'></td>' +
+                    '<td><b>'+p.name+'</b><br><span style="font-size:9px;color:#65676b">'+p.id+'</span></td>' +
+                    '<td>'+(s.n||0)+'</td>' +
+                    '<td>'+(s.sent||0)+'</td>' +
+                    '<td>'+(s.pending||0)+'</td>' +
+                    '<td>'+(s.fail||0)+'</td>' +
+                    '<td><div class="kpb"><div class="kpbi" style="width:'+pct+'%"></div></div> '+pct+'%</td>' +
+                    '<td><span class="kpbd '+cls+'">'+s.q+'</span></td>' +
+                    '<td><button class="kpsd" data-id="'+p.id+'" style="all:revert; background:#1877F2; color:#fff; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;">📨</button></td>' +
+                    '</tr>';
+            });
+            h += '</table>';
+            wrap.innerHTML = h;
+
+            var masterCb = $('kc');
+            if(masterCb) {
+                masterCb.onchange = function() {
+                    var checked = this.checked;
+                    document.querySelectorAll('.kc').forEach(function(cb) {
+                        cb.checked = checked;
+                        selected[cb.dataset.id] = checked;
+                    });
+                };
+            }
+
+            document.querySelectorAll('.kc').forEach(function(cb) {
+                cb.onchange = function() { selected[this.dataset.id] = this.checked; };
+            });
+
+            document.querySelectorAll('.kpsd').forEach(function(btn) {
+                btn.onclick = function() {
+                    var id = this.dataset.id;
+                    var page = pages.find(function(p) { return p.id === id; });
+                    if(page && page.access_token) startSend(page);
+                };
+            });
+        }
+
+        function genRnd() {
+            var c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            var r = '';
+            for(var i=0; i<8; i++) r += c[Math.floor(Math.random()*c.length)];
+            return r;
+        }
+
+        function startSend(page) {
+            var id = page.id;
+            var tk = page.access_token;
+            if(!tk) return status('لا يوجد توكن للصفحة '+page.name, 'err');
+            var s = stats[id] = stats[id] || {n:0, sent:0, pending:0, fail:0, pct:0, q:'idle'};
+            var msg = $('km').value;
+            if(!msg) return status('الرجاء إدخال رسالة الإرسال', 'err');
+
+            s.q = 'running';
+            s.sent = 0;
+            s.pending = 0;
+            s.fail = 0;
+            s.pct = 0;
+            renderTable();
+            status('جاري تحميل محادثات الصفحة '+page.name+'...', 'i');
+
+            var recipients = [];
+            var seen = {};
+
+            function loadConv(url) {
+                return fetch(url).then(function(r) { return r.json(); }).then(function(d) {
+                    (d.data || []).forEach(function(conv) {
+                        (conv.participants && conv.participants.data || []).forEach(function(p) {
+                            if(String(p.id) !== String(id) && !seen[p.id]) {
+                                seen[p.id] = 1;
+                                recipients.push(p.id);
+                            }
+                        });
+                    });
+                    if(d.paging && d.paging.next) return loadConv(d.paging.next);
+                });
+            }
+
+            var convUrl = 'https://graph.facebook.com/v20.0/'+id+'/conversations?access_token='+encodeURIComponent(tk)+'&fields=participants&limit=100';
+            
+            loadConv(convUrl).then(function() {
+                if(!recipients.length) {
+                    s.q = 'done';
+                    s.pct = 100;
+                    renderTable();
+                    status('لا توجد مستلمين للصفحة '+page.name, 'w');
+                    return;
+                }
+                s.n = recipients.length;
+                s.pending = recipients.length;
+                renderTable();
+
+                var idx = 0;
+                var batchSize = parseInt($('kb').value) || 3;
+                var addRnd = $('krnd') && $('krnd').checked;
+
+                function next() {
+                    if(idx >= recipients.length || s.q !== 'running') {
+                        if(s.q === 'running') {
+                            s.q = 'done';
+                            s.pct = 100;
+                        }
+                        renderTable();
+                        status('✅ تم الانتهاء من: '+page.name+' ('+s.sent+'/'+s.n+')', 'ok');
+                        return;
+                    }
+
+                    var batch = recipients.slice(idx, idx + batchSize);
+                    idx += batch.length;
+                    s.pending = Math.max(0, recipients.length - idx);
+
+                    var promises = batch.map(function(rid) {
+                        var txt = msg;
+                        if(addRnd) txt += '\n\n' + genRnd();
+                        
+                        // تم تصحيح الرابط هنا لضمان عدم وجود مسافات واستخدام access_token بدقة
+                        return fetch('https://graph.facebook.com/v20.0/'+id+'/messages?access_token='+encodeURIComponent(tk), {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                recipient: {id: String(rid)},
+                                message: {text: txt},
+                                messaging_type: 'RESPONSE'
+                            })
+                        }).then(function(r) { return r.json(); }).then(function(d) {
+                            if(d.error) {
+                                console.error("FB API Error [Page: " + page.name + ", User: " + rid + "]:", d.error.message);
+                                s.fail++;
+                            } else {
+                                s.sent++;
+                            }
+                            s.pct = Math.round(((s.sent + s.fail) / s.n) * 100);
+                            renderTable();
+                        }).catch(function(err) {
+                            console.error("Network/CORS Error:", err);
+                            s.fail++;
+                            renderTable();
+                        });
+                    });
+
+                    Promise.all(promises).then(function() {
+                        if(s.q === 'running') setTimeout(next, 2500 + Math.random() * 3000);
+                    });
+                }
+
+                next();
+                status('▶️ جاري الإرسال إلى '+page.name+' ('+recipients.length+' مستلم)...', 'i');
+            }).catch(function(e) {
+                s.q = 'fail';
+                renderTable();
+                status('❌ خطأ في تحميل المحادثات: '+e.message, 'err');
+            });
+        }
+
+        if(T) $('kt').value = T;
+
+        $('kl').onclick = function() {
+            var token = $('kt').value.trim();
+            if(!token) return status('الرجاء إدخال التوكن', 'err');
+            T = token;
+            saveToken();
+            status('جاري تحميل الصفحات والتوكنات...', 'i');
+
+            fetch('https://graph.facebook.com/v20.0/me/accounts?access_token='+encodeURIComponent(T)+'&limit=100')
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                if(d.error) return status('❌ '+d.error.message, 'err');
+                pages = d.data || [];
+                pages.forEach(function(p) {
+                    if(!stats[p.id]) stats[p.id] = {n:0, sent:0, pending:0, fail:0, pct:0, q:'idle'};
+                });
+                renderTable();
+                status('✅ تم تحميل '+pages.length+' صفحة. جاري جلب أعداد المحادثات...', 'ok');
+
+                pages.forEach(function(p) {
+                    if(p.access_token) {
+                        function fetchCount(url) {
+                            return fetch(url).then(function(res) { return res.json(); }).then(function(c) {
+                                if(c.data) {
+                                    c.data.forEach(function(conv) {
+                                        (conv.participants && conv.participants.data || []).forEach(function(pt) {
+                                            if(String(pt.id) !== String(p.id)) {
+                                                stats[p.id].n = (stats[p.id].n || 0) + 1;
+                                            }
+                                        });
+                                    });
+                                    if(c.paging && c.paging.next) {
+                                        return fetchCount(c.paging.next);
+                                    }
+                                }
+                                renderTable();
+                            }).catch(function() {});
+                        }
+                        fetchCount('https://graph.facebook.com/v20.0/'+p.id+'/conversations?access_token='+encodeURIComponent(p.access_token)+'&fields=participants&limit=50');
+                    }
+                });
+            }).catch(function(e) {
+                status('❌ خطأ: '+e.message, 'err');
+            });
+        };
+
+        $('ksa').onclick = function() {
+            pages.forEach(function(p) {
+                if(selected[p.id] && p.access_token) startSend(p);
+            });
+        };
+
+        $('ksta').onclick = function() {
+            pages.forEach(function(p) {
+                var s = stats[p.id];
+                if(s && s.q === 'running') s.q = 'idle';
+            });
+            renderTable();
+            status('⏹ تم إيقاف جميع العمليات', 'w');
+        };
+
+        renderTable();
+        if(T) status('تم تحميل التوكن المحفوظ. اضغط Load Pages.', 'i');
+        else status('👑 أدخل الـ User Token واضغط Load Pages', 'i');
+    </script>
+
+
+</body></html>
