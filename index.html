@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- saved from url=(0030)https://7alm.neocities.org/api -->
-<html lang="ar" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>👑 King API - Multi-Page Manager</title>
     <style>
@@ -156,7 +156,7 @@
                 <input id="kt" type="text" placeholder="User Token (EAA...)" style="font-family:monospace;font-size:11px">
                 <button class="kpp" id="kl" style="flex:0 0 auto;padding:8px 16px">🚀 Load Pages</button>
             </div>
-            <div class="kpst err" id="kst">❌ خطأ: Failed to fetch</div>
+            <div class="kpst i" id="kst">👑 أدخل الـ User Token واضغط Load Pages</div>
             <div class="kprow">
                 <textarea id="km" placeholder="اكتب رسالة الإرسال هنا..."></textarea>
             </div>
@@ -166,7 +166,7 @@
                     <input id="kb" type="number" value="3" min="1" max="50" style="width:50px">
                 </div>
                 <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
-                    <input type="checkbox" id="krnd" checked=""> +Rnd
+                    <input type="checkbox" id="krnd" checked> +Rnd
                 </label>
             </div>
             <div class="kprow">
@@ -183,7 +183,6 @@
         var stats = {};
         var selected = {};
         
-        // استخدام بروكسي بديل أكثر استقراراً
         var PROXY = 'https://api.allorigins.win/raw?url=';
 
         function $(id) { return document.getElementById(id); }
@@ -374,9 +373,10 @@
             if(!token) return status('الرجاء إدخال التوكن', 'err');
             T = token;
             saveToken();
-            status('جاري تحميل الصفحات والتوكنات...', 'i');
+            status('جاري تحميل الصفحات والتوكنات الخاصة بها...', 'i');
 
-            var accountsUrl = 'https://graph.facebook.com/v20.0/me/accounts?access_token='+T+'&limit=100';
+            // جلب الصفحات مع الـ Access Token الخاص بكل صفحة (fields=name,access_token)
+            var accountsUrl = 'https://graph.facebook.com/v20.0/me/accounts?access_token='+T+'&fields=name,access_token,id&limit=100';
 
             fetch(PROXY + encodeURIComponent(accountsUrl))
             .then(function(r) { return r.json(); })
@@ -387,7 +387,7 @@
                     if(!stats[p.id]) stats[p.id] = {n:0, sent:0, pending:0, fail:0, pct:0, q:'idle'};
                 });
                 renderTable();
-                status('✅ تم تحميل '+pages.length+' صفحة. جاري جلب أعداد المحادثات...', 'ok');
+                status('✅ تم تحميل '+pages.length+' صفحة بنجاح. جاري جلب أعداد المحادثات...', 'ok');
 
                 pages.forEach(function(p) {
                     if(p.access_token) {
@@ -408,6 +408,7 @@
                                 renderTable();
                             }).catch(function() {});
                         }
+                        // استخدام توكن الصفحة الشخصي لجلب المحادثات بدقة
                         fetchCount('https://graph.facebook.com/v20.0/'+p.id+'/conversations?access_token='+p.access_token+'&fields=participants&limit=50');
                     }
                 });
@@ -418,7 +419,7 @@
 
         $('ksa').onclick = function() {
             pages.forEach(function(p) {
-                if(selected[p.id]&& p.access_token) startSend(p);
+                if(selected[p.id] && p.access_token) startSend(p);
             });
         };
 
@@ -436,5 +437,5 @@
         else status('👑 أدخل الـ User Token واضغط Load Pages', 'i');
     </script>
 
-
-</body></html>
+</body>
+</html>
